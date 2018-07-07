@@ -1,0 +1,12 @@
+# IDEA
+/.idea
+
+# Build
+/.gradle
+/build
+
+# Gradle
+/gradle-app.setting
+
+# Temporary
+/tmp
