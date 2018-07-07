@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 group 'poemsa.publicstashes.downloader'
@@ -42,4 +43,16 @@ sourceSets {
     main.java.srcDirs = []
     test.kotlin.srcDirs = ['src/test']
     test.java.srcDirs = ['src/test']
+}
+
+shadowJar {
+    baseName 'poe-public-stash-downloader'
+    classifier = null
+    version = null
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ApplicationKt'
+    }
 }
