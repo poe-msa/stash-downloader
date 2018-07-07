@@ -35,3 +35,10 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+sourceSets {
+    main.kotlin.srcDirs = ['src/main']
+    main.java.srcDirs = []
+    test.kotlin.srcDirs = ['src/test']
+    test.java.srcDirs = ['src/test']
+}

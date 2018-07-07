@@ -1,5 +1,8 @@
 # IDEA
-/.idea
+/.idea/*.xml
+/.idea/.name
+/.idea/modules
+!/.idea/runConfigurations/*
 
 # Build
 /.gradle
