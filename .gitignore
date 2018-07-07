@@ -4,6 +4,7 @@
 # Build
 /.gradle
 /build
+/out
 
 # Gradle
 /gradle-app.setting
