@@ -1,4 +1,4 @@
 package exception
 
-class WorkerException(previous: Exception) : Exception("A worker Exception has occured.", previous) {
+class WorkerException(message: String?, previous: Exception?) : Exception("A worker Exception has occured.", previous) {
 }

@@ -55,12 +55,21 @@ class Worker(
             val fetchResult = fetcher.getApiResultByChangeId(context.currentChangeId)
 
             if (fetchResult.isSuccessful) {
-                logger.info("Fetch successful for change ID '${context.currentChangeId}' (${fetchResult.timeMs} ms taken).")
+                if (fetchResult.fromCache) {
+                    logger.info("Fetch successful for change ID '${context.currentChangeId}' (loaded from cache).")
+                } else {
+                    logger.info("Fetch successful for change ID '${context.currentChangeId}' (${fetchResult.timeMs} ms taken).")
+                }
                 metrics.appendFetchSuccess()
-                metrics.appendFetchRequestTime(fetchResult.timeMs)
+
+                if (!fetchResult.fromCache) {
+                    metrics.appendFetchRequestTime(fetchResult.timeMs)
+                }
             } else {
                 logger.warning("Fetch failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${fetchResult.remoteHttpCode}.")
                 metrics.appendFetchFailureFromApi(fetchResult.remoteHttpCode)
+
+                throw WorkerException("Cannot continue: API fetch failed", null)
             }
 
             return fetchResult
@@ -69,7 +78,7 @@ class Worker(
 
             metrics.appendFetchFailureDueToLocal()
 
-            throw WorkerException(ex)
+            throw WorkerException(null, ex)
         }
     }
 
@@ -88,7 +97,7 @@ class Worker(
 
             metrics.appendParseFailure()
 
-            throw WorkerException(ex)
+            throw WorkerException(null, ex)
         }
     }
 
@@ -103,6 +112,8 @@ class Worker(
             } else {
                 logger.warning("Write failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${writerResult.remoteHttpCode}.")
                 metrics.appendWriterFailureFromApi(writerResult.remoteHttpCode)
+
+                throw WorkerException("Cannot continue: write failed", null)
             }
 
             return writerResult
@@ -111,7 +122,7 @@ class Worker(
 
             metrics.appendWriterFailureDueToLocal()
 
-            throw WorkerException(ex)
+            throw WorkerException(null, ex)
         }
     }
 }
