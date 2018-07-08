@@ -4,6 +4,7 @@ class LocalConfig (config: Configuration) {
     val fetcherApiUrl = config[Key("fetcher.api_url", stringType)]
     val fetcherGzip = config[Key("fetcher.gzip", booleanType)]
     val fetcherInitialChangeId = config[Key("fetcher.initial_change_id", stringType)]
+    val fetcherTimeout = config[Key("fetcher.timeout", intType)]
 
     val googleAuthKeyFilename = config[Key("google.auth_key_filename", stringType)]
 

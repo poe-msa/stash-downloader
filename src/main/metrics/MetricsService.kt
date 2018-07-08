@@ -1,11 +1,15 @@
 package metrics
 
 class MetricsService {
-    fun appendBytesRead(bytesRead: Long) {
+    fun appendFetchRequestTime(timeMs: Int) {
 
     }
 
-    fun appendBytesWritten(bytesWritten: Long) {
+    fun appendParseTime(timeMs: Int) {
+
+    }
+
+    fun appendWriteRequestTime(timeMs: Int) {
 
     }
 
@@ -13,7 +17,7 @@ class MetricsService {
 
     }
 
-    fun appendFetchFailureFromApi(apiResultCode: Short) {
+    fun appendFetchFailureFromApi(apiResultCode: Int) {
 
     }
 
@@ -33,7 +37,7 @@ class MetricsService {
 
     }
 
-    fun appendWriterFailureFromApi(apiResultCode: Short) {
+    fun appendWriterFailureFromApi(apiResultCode: Int) {
 
     }
 

@@ -1,5 +1,5 @@
 package fetcher.exception
 
-class FetcherException(message: String) : Exception(message) {
+class FetcherException(message: String, previous: Exception) : Exception(message, previous) {
 
 }

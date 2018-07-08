@@ -16,7 +16,7 @@ val kodein = Kodein {
     bind<LocalConfig>() with singleton { buildConfig() }
     bind<WorkerContext>() with singleton { WorkerContext(instance()) }
 
-    bind<Fetcher>() with singleton { Fetcher() }
+    bind<Fetcher>() with singleton { Fetcher(instance()) }
 
     bind<MetricsService>() with singleton { MetricsService() }
 

@@ -2,9 +2,9 @@ import exception.WorkerException
 import fetcher.Fetcher
 import fetcher.exception.FetcherException
 import fetcher.result.FetchResult
-import jdk.nashorn.internal.runtime.ParserException
 import metrics.MetricsService
 import parser.Parser
+import parser.exception.ParserException
 import parser.result.ParserResult
 import writer.Writer
 import writer.result.WriterResult
@@ -52,12 +52,12 @@ class Worker(
 
     private fun getFetchResultFromContext(): FetchResult {
         try {
-            val fetchResult = fetcher.getApiResultByRemoteId(context.currentChangeId)
-            metrics.appendBytesRead(fetchResult.bytesRead)
+            val fetchResult = fetcher.getApiResultByChangeId(context.currentChangeId)
 
             if (fetchResult.isSuccessful) {
-                logger.info("Fetch successful for change ID '${context.currentChangeId}' (${fetchResult.bytesRead} bytes read OTW).")
+                logger.info("Fetch successful for change ID '${context.currentChangeId}' (${fetchResult.timeMs} ms taken).")
                 metrics.appendFetchSuccess()
+                metrics.appendFetchRequestTime(fetchResult.timeMs)
             } else {
                 logger.warning("Fetch failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${fetchResult.remoteHttpCode}.")
                 metrics.appendFetchFailureFromApi(fetchResult.remoteHttpCode)
@@ -78,8 +78,9 @@ class Worker(
             val parserResult = parser.parse(fetchResult.rawData)
 
             metrics.appendParseSuccess()
+            metrics.appendParseTime(parserResult.timeMs)
 
-            logger.info("Parsed payload of change ID '${context.currentChangeId}' successfully.")
+            logger.info("Parsed payload of change ID '${context.currentChangeId}' successfully (${parserResult.timeMs} ms taken).")
 
             return parserResult
         } catch (ex: ParserException) {
@@ -94,11 +95,11 @@ class Worker(
     private fun getWriterResultFromContext(parsedResult: ParserResult): WriterResult {
         try {
             val writerResult = writer.writeChangeIdResult(context.currentChangeId, parsedResult.parsedData)
-            metrics.appendBytesWritten(writerResult.bytesWritten)
 
             if (writerResult.isSuccessful) {
-                logger.info("Write successful change ID '${context.currentChangeId}'. Assigned file identifier: '${writerResult.fileIdentifier}' (${writerResult.bytesWritten} bytes written OTW)")
+                logger.info("Write successful change ID '${context.currentChangeId}'. Assigned file identifier: '${writerResult.fileIdentifier}' (${writerResult.timeMs}ms taken)")
                 metrics.appendWriterSuccess()
+                metrics.appendWriteRequestTime(writerResult.timeMs)
             } else {
                 logger.warning("Write failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${writerResult.remoteHttpCode}.")
                 metrics.appendWriterFailureFromApi(writerResult.remoteHttpCode)
