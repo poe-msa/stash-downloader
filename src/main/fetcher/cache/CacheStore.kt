@@ -25,7 +25,7 @@ class CacheStore (val maxSizeMb: Int) {
             requests = requests.drop(1)
         }
 
-        requests += CacheStoreEntry(rawData, changeId, Date())
+        requests += CacheStoreEntry(rawData, changeId)
     }
 
     fun getByChangeId(changeId: String): CacheStoreEntry? {
