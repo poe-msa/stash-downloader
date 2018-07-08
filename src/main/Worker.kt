@@ -15,7 +15,8 @@ class Worker(
         private val context: WorkerContext,
         private val parser: Parser,
         private val writer: Writer,
-        private val metrics: MetricsService
+        private val metrics: MetricsService,
+        private val localConfig: LocalConfig
 ) {
     val logger = Logger.getLogger(this.javaClass.name)
 
@@ -32,7 +33,7 @@ class Worker(
                     context.currentChangeId = parsedResult.nextChangeId
                 }
             }
-        } catch (ex: ParserException) {
+        } catch (ex: WorkerException) {
             throw ex
         }
     }
@@ -41,11 +42,11 @@ class Worker(
         while (true) {
             try {
                 runOnce()
-            } catch (ex: ParserException) {
+            } catch (ex: WorkerException) {
                 ex.printStackTrace()
             }
 
-            Thread.sleep(context.delayMsBetweenWorkloads) // ToDo: Figure out how to make wait work
+            Thread.sleep(localConfig.workerRunDelayMs) // ToDo: Figure out how to make wait work
         }
     }
 

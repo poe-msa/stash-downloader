@@ -2,6 +2,7 @@
 /.idea/*.xml
 /.idea/.name
 /.idea/modules
+/.idea/inspectionProfiles
 !/.idea/runConfigurations/*
 
 # Build
@@ -14,3 +15,7 @@
 
 # Temporary
 /tmp
+
+# LocalConfig & Auth keys
+/local.properties
+/auth
