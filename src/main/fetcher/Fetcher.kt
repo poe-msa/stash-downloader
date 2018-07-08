@@ -22,15 +22,16 @@ class Fetcher (val localConfig: LocalConfig) {
             val (request, response, result) = localConfig.fetcherApiUrl.httpGet(listOf("next_change_id" to changeId))
                     .timeout(localConfig.fetcherTimeout)
                     .timeoutRead(localConfig.fetcherTimeout)
-                    .response()
+                    .responseString()
             val afterRequestMs = System.currentTimeMillis()
             val requestTimeMs = (afterRequestMs - beforeRequestMs).toInt()
+            val strResponse = result.get()
 
             return if (response.statusCode != 200) {
-                FetchResult(false, response.statusCode, response.responseMessage, requestTimeMs, false)
+                FetchResult(false, response.statusCode, strResponse, requestTimeMs, false)
             } else {
-                cacheStore.append(changeId, response.responseMessage)
-                FetchResult(true, response.statusCode, response.responseMessage, requestTimeMs, false)
+                cacheStore.append(changeId, strResponse)
+                FetchResult(true, response.statusCode, strResponse, requestTimeMs, false)
             }
         } catch (ex: Exception) {
             throw FetcherException("An internal fetcher error has occured: ${ex.message}", ex)

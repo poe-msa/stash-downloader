@@ -1,11 +1,15 @@
 package parser
 
-import parser.exception.ParserException
+import com.beust.klaxon.Klaxon
 import parser.result.ParserResult
 
 class Parser {
     fun parse(data: String): ParserResult {
-        // ToDo: Implement
-        throw ParserException("Not implemented")
+        val parseBeforeMs = System.currentTimeMillis()
+        val stashResult = Klaxon().parse<ParsedStashResult>(data)
+        val parseAfterMs = System.currentTimeMillis()
+        val totalParseMs = (parseAfterMs - parseBeforeMs).toInt()
+
+        return ParserResult(stashResult!!.nextChangeId, data, totalParseMs)
     }
 }

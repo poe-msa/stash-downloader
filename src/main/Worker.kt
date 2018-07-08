@@ -7,6 +7,7 @@ import parser.Parser
 import parser.exception.ParserException
 import parser.result.ParserResult
 import writer.Writer
+import writer.exception.WriterException
 import writer.result.WriterResult
 import java.util.logging.Logger
 
@@ -117,7 +118,7 @@ class Worker(
             }
 
             return writerResult
-        } catch (ex: ParserException) {
+        } catch (ex: WriterException) {
             logger.warning("Failed to write parsed result successfully: ${ex.message}")
 
             metrics.appendWriterFailureDueToLocal()
