@@ -20,21 +20,32 @@ class Worker(
     val logger = Logger.getLogger(this.javaClass.name)
 
     fun runOnce() {
-        val fetchResult = getFetchResultFromContext()
+        try {
+            logger.info("Starting work for change ID '${context.currentChangeId}'.")
+            val fetchResult = getFetchResultFromContext()
 
-        if (fetchResult.isSuccessful) {
-            val parsedResult = getParserResultFromContext(fetchResult)
-            val writerResult = getWriterResultFromContext(parsedResult)
+            if (fetchResult.isSuccessful) {
+                val parsedResult = getParserResultFromContext(fetchResult)
+                val writerResult = getWriterResultFromContext(parsedResult)
 
-            if (writerResult.isSuccessful) {
-                context.currentChangeId = parsedResult.nextChangeId
+                if (writerResult.isSuccessful) {
+                    context.currentChangeId = parsedResult.nextChangeId
+                }
             }
+        } catch (ex: ParserException) {
+            throw ex
         }
     }
 
     fun loop() {
         while (true) {
-            runOnce()
+            try {
+                runOnce()
+            } catch (ex: ParserException) {
+                ex.printStackTrace()
+            }
+
+            Thread.sleep(context.delayMsBetweenWorkloads) // ToDo: Figure out how to make wait work
         }
     }
 
@@ -44,8 +55,10 @@ class Worker(
             metrics.appendBytesRead(fetchResult.bytesRead)
 
             if (fetchResult.isSuccessful) {
+                logger.info("Fetch successful for change ID '${context.currentChangeId}' (${fetchResult.bytesRead} bytes read OTW).")
                 metrics.appendFetchSuccess()
             } else {
+                logger.warning("Fetch failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${fetchResult.remoteHttpCode}.")
                 metrics.appendFetchFailureFromApi(fetchResult.remoteHttpCode)
             }
 
@@ -65,6 +78,8 @@ class Worker(
 
             metrics.appendParseSuccess()
 
+            logger.info("Parsed payload of change ID '${context.currentChangeId}' successfully.")
+
             return parserResult
         } catch (ex: ParserException) {
             logger.warning("Failed to parse result successfully: ${ex.message}")
@@ -78,11 +93,14 @@ class Worker(
     private fun getWriterResultFromContext(parsedResult: ParserResult): WriterResult {
         try {
             val writerResult = writer.writeChangeIdResult(context.currentChangeId, parsedResult.parsedData)
+            metrics.appendBytesWritten(writerResult.bytesWritten)
 
             if (writerResult.isSuccessful) {
+                logger.info("Write successful change ID '${context.currentChangeId}'. Assigned file identifier: '${writerResult.fileIdentifier}' (${writerResult.bytesWritten} bytes written OTW)")
                 metrics.appendWriterSuccess()
             } else {
-                metrics.appendFetchFailureFromApi(writerResult.remoteHttpCode)
+                logger.warning("Write failed for change ID '${context.currentChangeId}' due to remote error. HTTP code: ${writerResult.remoteHttpCode}.")
+                metrics.appendWriterFailureFromApi(writerResult.remoteHttpCode)
             }
 
             return writerResult

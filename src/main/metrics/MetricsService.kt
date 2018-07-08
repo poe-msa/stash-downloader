@@ -1,11 +1,11 @@
 package metrics
 
 class MetricsService {
-    fun appendBytesRead(bytesRead: Number) {
+    fun appendBytesRead(bytesRead: Long) {
 
     }
 
-    fun appendBytesWritten(bytesWritten: Number) {
+    fun appendBytesWritten(bytesWritten: Long) {
 
     }
 

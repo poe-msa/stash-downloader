@@ -1,3 +1,3 @@
-class WorkerContext(initialRemoteId: String) {
+class WorkerContext(initialRemoteId: String, val delayMsBetweenWorkloads: Long) {
     var currentChangeId = initialRemoteId
 }
