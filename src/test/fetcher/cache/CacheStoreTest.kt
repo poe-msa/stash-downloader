@@ -66,6 +66,16 @@ class CacheStoreTest {
     }
 
     @Test
+    fun test_given50PctFilledStore_whenGetIsCalledWithNonExistingChangeId_thenReturnedDataIsNull() {
+        val store = CacheStore(1)
+        store.append("initial", getPayloadOfSize(1024 * 512))
+
+        val actual = store.getByChangeId("nonexisting")
+
+        assertThat(actual).isNull()
+    }
+
+    @Test
     fun test_given50PctFilledStore_whenAppendDataIsRemaining50PctPlus1_thenGetChangeIdOfInitialReturnsNull() {
         val store = CacheStore(1)
         store.append("initial", getPayloadOfSize(1024 * 512))

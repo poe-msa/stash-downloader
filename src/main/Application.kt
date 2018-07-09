@@ -22,7 +22,7 @@ val kodein = Kodein {
 
     bind<Parser>() with singleton { Parser() }
 
-    bind<Writer>() with singleton { Writer() }
+    bind<Writer>() with singleton { Writer(instance()) }
 }
 
 fun main(args: Array<String>) {
