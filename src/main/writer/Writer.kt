@@ -20,6 +20,7 @@ class Writer(val localConfig: LocalConfig) {
         val outputStream = ByteArrayOutputStream()
         val gzipStream = GZIPOutputStream(outputStream)
         gzipStream.write(data.toByteArray())
+        gzipStream.close()
         val bytes = outputStream.toByteArray()
 
         bucket.create(fileIdentifier, bytes, "application/octet-stream")

@@ -1,6 +1,7 @@
 package fetcher
 
 import LocalConfig
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.httpGet
 import fetcher.cache.CacheStore
 import fetcher.exception.FetcherException
@@ -19,7 +20,7 @@ class Fetcher (val localConfig: LocalConfig) {
             }
 
             val beforeRequestMs = System.currentTimeMillis()
-            val (request, response, result) = localConfig.fetcherApiUrl.httpGet(listOf("next_change_id" to changeId))
+            val (request, response, result) = Fuel.get(localConfig.fetcherApiUrl, listOf("id" to changeId))
                     .timeout(localConfig.fetcherTimeout)
                     .timeoutRead(localConfig.fetcherTimeout)
                     .responseString()
