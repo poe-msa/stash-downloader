@@ -1,15 +1,19 @@
 package writer
 
 import LocalConfig
+import com.google.auth.Credentials
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.*
 import writer.result.WriterResult
 import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
 import java.util.zip.GZIPOutputStream
 
 class Writer(val localConfig: LocalConfig) {
     fun writeChangeIdResult(changeId: String, data: String): WriterResult {
         val beforeUploadMs = System.currentTimeMillis()
-        val storage = StorageOptions.getDefaultInstance().service
+        val credentials = GoogleCredentials.fromStream(FileInputStream(localConfig.googleAuthKeyFilename))
+        val storage = StorageOptions.newBuilder().setCredentials(credentials).build().service
 
         // ToDo: Bucket could be created here
         val bucket = storage.get(localConfig.writerBucketName)
