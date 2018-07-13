@@ -1,10 +1,6 @@
 # Dockerized infrastructure
 sudo: false
-
-# NodeJS CI environment
-language: node_js
-node_js:
-  - "6"
+language: python
 
 # Cache SDK between commands
 cache:
@@ -25,6 +21,19 @@ env:
     - PROJECT_NAME=poe-analysis-gcs
     - DOCKER_IMAGE=stash-downloader
     - SERVICE_INSTANCE_NAME=stash-downloader
+
+install:
+  -
+
+script:
+  -
+
+before_deploy:
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+  - source /home/travis/google-cloud-sdk/path.bash.inc
+  - gcloud --quiet version
+  - gcloud --quiet components update
+  - gcloud --quiet components beta update
 
 deploy:
   - provider: script
