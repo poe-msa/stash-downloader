@@ -13,7 +13,7 @@ FROM openjdk:${VERSION}-jre-alpine
 
 COPY --from=BUILD /src/build/libs/ /svc/
 COPY ./deploy/service-credentials.json /svc/deploy/service-credentials.json
-COPY ./default.properties /svc/deploy/default.properties
+COPY ./defaults.properties /svc/deploy/defaults.properties
 
 WORKDIR /svc
 
