@@ -13,8 +13,8 @@ cache:
 
 # Decrypt
 before_install:
-- openssl aes-256-cbc -K $encrypted_e024391c3189_key -iv $encrypted_e024391c3189_iv -in deploy-credentials.json.enc -out ./deploy/deploy-credentials.json -d
-- openssl aes-256-cbc -K $encrypted_e024391c3189_key -iv $encrypted_e024391c3189_iv -in service-credentials.json.enc -out ./deploy/service-credentials.json -d
+- openssl aes-256-cbc -K $encrypted_e024391c3189_key -iv $encrypted_e024391c3189_iv -in ci.tar.enc -out ci.tar -d
+- tar xvf ci.tar
 
 # Environment
 env:
