@@ -19,8 +19,8 @@ services:
 # Environment
 env:
   global:
-    - GOOGLE_DEPLOY_CREDENTIALS=~/deploy/deploy-credentials.json
-    - GOOGLE_SERVICE_CREDENTIALS=~/deploy/service-credentials.json
+    - GOOGLE_DEPLOY_CREDENTIALS=./deploy/deploy-credentials.json
+    - GOOGLE_SERVICE_CREDENTIALS=./deploy/service-credentials.json
     - CLOUDSDK_COMPUTE_ZONE=us-central1-c
     - PROJECT_NAME=poe-analysis-gcs
     - DOCKER_IMAGE=stash-downloader
