@@ -1,0 +1,34 @@
+# Dockerized infrastructure
+sudo: false
+
+# NodeJS CI environment
+language: node_js
+node_js:
+  - "6"
+
+# Cache SDK between commands
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
+
+# Decrypt
+before_install:
+- openssl aes-256-cbc -K $encrypted_e024391c3189_key -iv $encrypted_e024391c3189_iv -in deploy/service-credentials.json.enc -out deploy/service-credentials.json -d
+- openssl aes-256-cbc -K $encrypted_e024391c3189_key -iv $encrypted_e024391c3189_iv -in deploy/deploy-credentials.json.enc -out deploy/deploy-credentials.json -d
+
+# Environment
+env:
+  global:
+    - GOOGLE_DEPLOY_CREDENTIALS=~/deploy/deploy-credentials.json
+    - GOOGLE_SERVICE_CREDENTIALS=~/deploy/service-credentials.json
+    - CLOUDSDK_COMPUTE_ZONE=us-central1-c
+    - PROJECT_NAME=poe-analysis-gcs
+    - DOCKER_IMAGE=stash-downloader
+    - SERVICE_INSTANCE_NAME=stash-downloader
+
+deploy:
+  - provider: script
+    script: ./deploy/production.sh
+    skip_cleanup: true
+    on:
+      branch: master

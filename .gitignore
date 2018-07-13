@@ -16,6 +16,10 @@
 # Temporary
 /tmp
 
+# Keys
+/deploy/deploy-credentials.json
+/deploy/gcs-credentials.json
+
 # LocalConfig & Auth keys
 /local.properties
 /auth
