@@ -4,7 +4,7 @@ set -e
 
 docker build -t gcr.io/${PROJECT_NAME}/${DOCKER_IMAGE}:$TRAVIS_COMMIT .
 
-gcloud auth activate-service-account --key-file ./deploy/$GOOGLE_DEPLOY_CREDENTIALS
+gcloud auth activate-service-account --key-file $GOOGLE_DEPLOY_CREDENTIALS
 
 gcloud --quiet config set project $PROJECT_NAME
 gcloud --quiet config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
