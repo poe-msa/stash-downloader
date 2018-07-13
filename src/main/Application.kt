@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 
 fun buildConfig(): LocalConfig {
     val rawConfig = EnvironmentVariables() overriding
-        ConfigurationProperties.fromFile(File("local.properties")) overriding
+        ConfigurationProperties.fromOptionalFile(File("local.properties")) overriding
         ConfigurationProperties.fromFile(File("defaults.properties"))
 
     return LocalConfig(rawConfig)
